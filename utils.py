@@ -178,21 +178,19 @@ def preprocess_for_ocr(image: np.ndarray) -> np.ndarray:
 _ocr_model = None
 
 
-def load_ocr_model(lang: str = 'ch'):
-    """Load PaddleOCR only once - this is the key to speed"""
+def load_ocr_model(lang: str = 'ch', device: str = "gpu"):
+    """Load PaddleOCR only once with selected device"""
     global _ocr_model
     if _ocr_model is None:
-        print("🔄 Loading OCR models for the first time (10-20 seconds)...")
-        from paddleocr import PaddleOCR
+        print(f"🔄 Loading OCR models on {device.upper()}...")
         _ocr_model = PaddleOCR(
-            use_angle_cls=True,   # better for rotated text
+            use_angle_cls=True,
             ocr_version='PP-OCRv5',
             lang=lang,
-            device=device          # change to False if you want pure CPU
+            device=device         # ← now dynamic
         )
-        print("✅ OCR models loaded and cached!")
+        print(f"✅ OCR models loaded on {device.upper()}!")
     return _ocr_model
-
 
 # def load_ocr_model(lang: str = 'ch'):
 #     """Load OCR model only once and reuse it"""
@@ -206,8 +204,9 @@ def load_ocr_model(lang: str = 'ch'):
 
 
 def perform_ocr(image: np.ndarray, lang: str = 'ch'):
-    """Fast version - reuses the same model"""
-    ocr = load_ocr_model(lang=lang)
+    """Uses the device chosen by the user"""
+    device = st.session_state.get("ocr_device", "gpu")   # ← get from app.py
+    ocr = load_ocr_model(lang=lang, device=device)
     preprocessed = preprocess_for_ocr(image)
 
     result = ocr.ocr(preprocessed)  # ← this is the correct call
