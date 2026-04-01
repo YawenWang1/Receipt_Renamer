@@ -59,32 +59,40 @@ st.divider()
 
 # ====================== OLLAMA CHECK ======================
 def check_ollama_running():
-    try:
-        response = requests.get("http://localhost:11434/api/tags", timeout=3)
-        return response.status_code == 200
-    except:
-        return False
+    """More robust Ollama detection"""
+    for host in ["http://localhost:11434", "http://127.0.0.1:11434"]:
+        try:
+            # Try the tags endpoint
+            r = requests.get(f"{host}/api/tags", timeout=5)
+            if r.status_code == 200:
+                return True
+
+            # Try the version endpoint as fallback
+            r = requests.get(f"{host}/api/version", timeout=5)
+            if r.status_code == 200:
+                return True
+        except:
+            continue
+    return False
 
 # ====================== OLLAMA WARNING ======================
 if not check_ollama_running():
     st.error("❌ **Ollama is not running**")
     st.markdown("""
-    This app requires **Ollama** to be installed and running on your computer.
+    This app requires **Ollama** to be installed and running.
 
-    **Quick Setup:**
-    1. Download and install Ollama from [ollama.com](https://ollama.com)
-    2. Open a terminal and run:
+    ### How to start Ollama:
+    1. Open a terminal/command prompt
+    2. Run this command:
        ```bash
        ollama serve
        ```
-    3. In another terminal, run:
-       ```bash
-       ollama pull qwen2.5:7b-instruct-q4_K_M
-       ```
-    4. Refresh this page.
+    3. Keep that terminal window open
+    4. Refresh this page
+
+    **Tip:** You can also run `ollama run qwen2.5:7b-instruct-q4_K_M` in another terminal if you prefer.
     """)
     st.stop()
-
 # ====================== OLLAMA SETTINGS ======================
 def setup_ollama_environment():
     """Set optimal Ollama settings automatically"""
