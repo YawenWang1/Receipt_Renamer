@@ -16,7 +16,7 @@ if 'theme' not in st.session_state:
     st.session_state.theme = "light"
 
 def toggle_theme():
-    st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
+    st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
 
 if st.session_state.theme == "dark":
     st.markdown('<style>.stApp { background-color: #0e1117; color: #fafafa; }</style>', unsafe_allow_html=True)
@@ -33,8 +33,7 @@ with col2:
         st.rerun()
 
 st.markdown("**Simple • Private • Local** — AI-powered receipt scanner and renamer")
-
-st.info("🧪 **Demo Mode** — Real AI processing requires Ollama running locally.")
+st.info("🧪 **Demo Mode** — Real AI processing requires Ollama running locally on your computer.")
 
 # ====================== UPLOADER ======================
 uploaded_files = st.file_uploader(
@@ -47,7 +46,15 @@ uploaded_files = st.file_uploader(
 if uploaded_files:
     if st.button(f"🚀 Process {len(uploaded_files)} Files", type="primary"):
         with st.spinner("Processing in demo mode..."):
-            time.sleep(2.5)  # simulate processing
+            # Simulate realistic processing time based on number of files
+            estimated_time = len(uploaded_files) * 2.8   # ~2.8 seconds per file
+            progress_bar = st.progress(0)
+            status_text = st.empty()
+
+            for i in range(len(uploaded_files)):
+                status_text.text(f"Processing file {i+1}/{len(uploaded_files)}...")
+                time.sleep(0.9)  # simulate delay
+                progress_bar.progress((i + 1) / len(uploaded_files))
 
             # Create realistic mock results
             mock_results = []
@@ -56,7 +63,7 @@ if uploaded_files:
                     "Original File": file.name,
                     "Date": "2025-04-01",
                     "Vendor": "Demo Store",
-                    "Category": "Eten" if "ah" in file.name.lower() or "jumbo" in file.name.lower() else "Other",
+                    "Category": "Eten" if any(x in file.name.lower() for x in ["ah", "jumbo", "aldi"]) else "Other",
                     "Currency": "€",
                     "Amount": round(5.5 + i * 2.3, 2),
                     "Order Number": f"DEMO{10000 + i}",
@@ -65,7 +72,11 @@ if uploaded_files:
 
             st.session_state.df_results = pd.DataFrame(mock_results)
             st.session_state.data_processed = True
-            st.success("✅ Demo processing completed! (Real version needs Ollama)")
+            st.session_state.total_time = round(estimated_time, 1)
+            st.session_state.ocr_time = round(estimated_time * 0.4, 1)
+            st.session_state.llm_time = round(estimated_time * 0.6, 1)
+
+            st.success(f"✅ Demo processing completed in {st.session_state.total_time} seconds!")
             st.rerun()
 
 # ====================== REVIEW & EDIT ======================
@@ -99,6 +110,14 @@ if st.session_state.get('data_processed') and not st.session_state.get('df_resul
         hide_index=True
     )
 
+    # Timers (demo)
+    if 'total_time' in st.session_state:
+        st.divider()
+        c1, c2, c3 = st.columns(3)
+        c1.metric("⏱️ Total Processing Time", f"{st.session_state.total_time} seconds")
+        c2.metric("👁️ OCR Time", f"{st.session_state.ocr_time} seconds")
+        c3.metric("🧠 LLM Time", f"{st.session_state.llm_time} seconds")
+
     # Preview
     st.subheader("Receipt Preview")
     selected_file = st.selectbox(
@@ -108,7 +127,7 @@ if st.session_state.get('data_processed') and not st.session_state.get('df_resul
     )
 
     st.image(
-        "https://via.placeholder.com/800x500/1f2937/ffffff?text=Receipt+Image+Preview",
+        "https://via.placeholder.com/800x500/1f2937/ffffff?text=Receipt+Preview",
         caption="Demo Preview — Real image would appear here when running locally with Ollama",
         use_column_width=True
     )
@@ -126,7 +145,6 @@ if st.session_state.get('data_processed') and not st.session_state.get('df_resul
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
             zf.writestr("summary.csv", final_df.to_csv(sep=";", decimal=",", index=False).encode('utf-8'))
-            # Add a dummy image for demo
             zf.writestr("demo_receipt.jpg", b"dummy image content")
 
         st.download_button(
