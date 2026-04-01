@@ -57,6 +57,34 @@ st.markdown("**Simple • Private • Local** — AI-powered receipt scanner and
 st.divider()
 
 
+# ====================== OLLAMA CHECK ======================
+def check_ollama_running():
+    try:
+        response = requests.get("http://localhost:11434/api/tags", timeout=3)
+        return response.status_code == 200
+    except:
+        return False
+
+# ====================== OLLAMA WARNING ======================
+if not check_ollama_running():
+    st.error("❌ **Ollama is not running**")
+    st.markdown("""
+    This app requires **Ollama** to be installed and running on your computer.
+
+    **Quick Setup:**
+    1. Download and install Ollama from [ollama.com](https://ollama.com)
+    2. Open a terminal and run:
+       ```bash
+       ollama serve
+       ```
+    3. In another terminal, run:
+       ```bash
+       ollama pull qwen2.5:7b-instruct-q4_K_M
+       ```
+    4. Refresh this page.
+    """)
+    st.stop()
+
 # ====================== OLLAMA SETTINGS ======================
 def setup_ollama_environment():
     """Set optimal Ollama settings automatically"""
