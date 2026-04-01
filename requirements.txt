@@ -1,11 +1,19 @@
-streamlit~=1.54.0
-pandas~=2.3.3
-numpy~=2.4.2
-instructor~=1.14.5
-paddleocr~=3.4.0
-pydantic~=2.12.5
-openai~=2.29.0
-python-dateutil~=2.9.0.post0
+# Core
+streamlit>=1.32.0
 
-# Use headless OpenCV for cloud deployment (fixes Python 3.13 issues)
-opencv-python-headless
+# Data & UI
+pandas
+
+# PDF and Image Processing
+pymupdf                  # ← This was missing (fitz)
+opencv-python-headless   # Better for cloud deployment # for python 3.13 compatibility issue
+numpy
+
+# OCR
+paddleocr
+paddlepaddle             # CPU version (safer for cloud)
+
+# LLM Structured Output
+pydantic
+instructor
+openai
