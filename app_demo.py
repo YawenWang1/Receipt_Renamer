@@ -19,9 +19,19 @@ def toggle_theme():
     st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
 
 if st.session_state.theme == "dark":
-    st.markdown('<style>.stApp { background-color: #0e1117; color: #fafafa; }</style>', unsafe_allow_html=True)
+    st.markdown("""
+        <style>
+        .stApp { background-color: #0e1117; color: #fafafa; }
+        .css-1d391kg { background-color: #1f2937; border-radius: 12px; }
+        </style>
+    """, unsafe_allow_html=True)
 else:
-    st.markdown('<style>.stApp { background-color: #f8f9fa; color: #1f2937; }</style>', unsafe_allow_html=True)
+    st.markdown("""
+        <style>
+        .stApp { background-color: #f8f9fa; color: #1f2937; }
+        .css-1d391kg { background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 12px; }
+        </style>
+    """, unsafe_allow_html=True)
 
 # ====================== HEADER ======================
 col1, col2 = st.columns([5, 1])
