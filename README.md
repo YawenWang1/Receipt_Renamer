@@ -18,17 +18,8 @@ A clean, private tool that extracts key information from receipts and invoices, 
 *(Runs in mock mode — no Ollama required)*
 
 ### Screenshots
-![Review Local_Version](Screenshots/Full_local_Receipt_Renamer_Streamlit.pdf)
-![Preview_Demo](Screenshots/Receipt Renamer_Demo_Streamlit.pdf)
-
-### Screenshots
 ![Review Local Version](Screenshots/Full_local_Receipt_Renamer_Streamlit.pdf)  
 ![Preview_Demo](Screenshots/Receipt_Renamer_Demo_Streamlit.pdf)
-
-### Requirements
-- Python 3.10+
-- [Ollama](https://ollama.com) installed and running
-- NVIDIA GPU recommended (but works on CPU)
 
 ### Quick Local Setup (Full AI Version)
 
