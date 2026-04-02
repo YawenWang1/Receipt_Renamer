@@ -1,13 +1,25 @@
 # Receipt_Renamer
-**Receipt Renamer** — A clean and private AI-powered receipt scanner.  
-Automatically extracts date, vendor, amount, category, currency, and receipt number from PDFs and images using local OCR + LLM (Ollama). Intelligently renames files and exports a ready-to-use ZIP with summary CSV.
+
+**AI-powered receipt scanner and smart file renamer**
+
+A clean, private tool that extracts key information from receipts and invoices, then intelligently renames the files for easy organization.
 
 ### Features
-- Extracts date, vendor, amount, category, currency, and receipt number
-- Automatically renames files (`YYYY_MM_DD_Vendor_Amount.jpg`)
-- Supports PDFs and images
+- Extracts: Date, Vendor, Amount, Category, Currency, Receipt Number
+- Automatically renames files in a clean format (`YYYY_MM_DD_Vendor_Amount.jpg`)
+- Supports multi-page PDFs and images (JPG, PNG)
 - Clean review & edit interface
-- Exports ZIP with renamed files + summary CSV
+- Exports a ZIP with renamed files + summary CSV (ready for Excel)
+- Light / Dark theme
+- Runs 100% locally (no data leaves your computer)
+
+### Live Demo
+[Try the Demo Version](https://receiptrenamer-demo.streamlit.app/)  
+*(Runs in mock mode — no Ollama required)*
+
+### Screenshots
+![Review Local_Version](Screenshots/Full_local_Receipt_Renamer_Streamlit.pdf)
+![Preview_Demo] Screenshots/Receipt Renamer_Demo_Streamlit.pdf)
 
 ### Requirements
 - Python 3.10+
