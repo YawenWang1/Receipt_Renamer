@@ -7,6 +7,7 @@ import os
 import concurrent.futures
 import time
 import warnings
+import requests
 import subprocess
 import sys
 
@@ -59,16 +60,13 @@ st.divider()
 
 # ====================== OLLAMA CHECK ======================
 def check_ollama_running():
-    """More robust Ollama detection"""
+    """Robust Ollama detection"""
     for host in ["http://localhost:11434", "http://127.0.0.1:11434"]:
         try:
-            # Try the tags endpoint
-            r = requests.get(f"{host}/api/tags", timeout=5)
+            r = requests.get(f"{host}/api/tags", timeout=8)   # increased timeout
             if r.status_code == 200:
                 return True
-
-            # Try the version endpoint as fallback
-            r = requests.get(f"{host}/api/version", timeout=5)
+            r = requests.get(f"{host}/api/version", timeout=8)
             if r.status_code == 200:
                 return True
         except:
