@@ -14,10 +14,10 @@ Automatically extracts date, vendor, amount, category, currency, and receipt num
 - [Ollama](https://ollama.com) installed and running
 - NVIDIA GPU recommended (but works on CPU)
 
-### Quick Start
+### Quick Local Setup (Full AI Version)
 
 1. Install Ollama from [ollama.com](https://ollama.com)
 2. Run in terminal:
    ```bash
-   ollama serve
-   ollama pull qwen2.5:7b-instruct-q4_K_M
+   ollama serve                               # Keep this terminal open
+   ollama pull qwen2.5:7b-instruct-q4_K_M     # Download model (only once)
