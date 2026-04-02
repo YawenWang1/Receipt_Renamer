@@ -18,7 +18,7 @@ A clean, private tool that extracts key information from receipts and invoices, 
 *(Runs in mock mode — no Ollama required)*
 
 ### Screenshots
-[Review Local Version](Screenshots/Full_local_Receipt_Renamer_Streamlit.pdf)  
+[Preview Local Version](Screenshots/Full_local_Receipt_Renamer_Streamlit.pdf)  
 [Preview_Demo](Screenshots/Receipt_Renamer_Demo_Streamlit.pdf)
 
 ### Quick Local Setup (Full AI Version)
