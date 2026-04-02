@@ -13,7 +13,7 @@ st.set_page_config(page_title="Receipt Renamer", page_icon="🧾", layout="wide"
 
 # ====================== THEME ======================
 if 'theme' not in st.session_state:
-    st.session_state.theme = "light"
+    st.session_state.theme = "dark"
 
 def toggle_theme():
     st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
