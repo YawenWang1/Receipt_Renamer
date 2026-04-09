@@ -28,20 +28,356 @@ if 'theme' not in st.session_state:
 def toggle_theme():
     st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
 
+if "uploaded_files" not in st.session_state:
+    st.session_state.uploaded_files = []
+
+# Theme-specific styles
 if st.session_state.theme == "dark":
     st.markdown("""
         <style>
-        .stApp { background-color: #0e1117; color: #fafafa; }
-        .css-1d391kg { background-color: #1f2937; border-radius: 12px; }
+        .stApp {
+            background-color: #0e1117;
+            color: #fafafa;
+        }
+
+        .css-1d391kg {
+            background-color: #1f2937;
+            border-radius: 12px;
+        }
+
+        /* Uploader label */
+        .stFileUploader label,
+        .stFileUploader [data-testid="stWidgetLabel"],
+        .stFileUploader [data-testid="stWidgetLabel"] p {
+            color: #f8fafc !important;
+            opacity: 1 !important;
+            font-weight: 500 !important;
+        }
+
+        /* Dropzone text */
+        .stFileUploader div[data-testid="stFileUploadDropzone"] p,
+        .stFileUploader div[data-testid="stFileUploadDropzone"] div {
+            color: #e5e7eb !important;
+            font-weight: 500 !important;
+            font-size: 15px !important;
+            opacity: 1 !important;
+        }
+
+        /* Uploaded filenames */
+        .stFileUploader [data-testid="stFileUploaderFileName"] {
+            color: #f3f4f6 !important;
+            font-weight: 500 !important;
+            font-size: 15px !important;
+            opacity: 1 !important;
+        }
+
+        /* File size / secondary text */
+        .stFileUploader [data-testid="stFileUploaderFile"] small,
+        .stFileUploader [data-testid="stFileUploaderFile"] span {
+            color: #cbd5e1 !important;
+            font-weight: 400 !important;
+            opacity: 1 !important;
+        }
+
+        /* Data editor / dataframe */
+        .stDataFrame, .stTable, .stDataEditor {
+            background-color: #111827 !important;
+            color: #f9fafb !important;
+        }
+
+        .stDataFrame thead th, .stDataEditor thead th {
+            background-color: #1f2937 !important;
+            color: #f9fafb !important;
+        }
+
+        .stDataFrame td, .stDataEditor td {
+            color: #f9fafb !important;
+        }
+
+        /* Info box */
+        .stAlert {
+            background-color: #1e3a5f !important;
+            color: #bfdbfe !important;
+            border-radius: 8px;
+        }
+
+        /* Uploader container */
+        .stFileUploader {
+            background-color: #111827 !important;
+            border: 1px solid #374151 !important;
+            border-radius: 12px;
+        }
+
+        /* Metrics */
+        div[data-testid="metric-container"] {
+            background-color: #111827 !important;
+            border: 1px solid #374151 !important;
+            border-radius: 12px !important;
+            padding: 12px 16px !important;
+            color: #f9fafb !important;
+            box-shadow: none !important;
+        }
+
+        div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div,
+        div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div p {
+            color: #cbd5e1 !important;
+            font-weight: 600 !important;
+        }
+
+        div[data-testid="metric-container"] [data-testid="stMetricValue"] {
+            color: #f9fafb !important;
+        }
+
+        div[data-testid="metric-container"] [data-testid="stMetricDelta"] {
+            color: #cbd5e1 !important;
+        }
+
+        /* Selectbox */
+        div[data-baseweb="select"] > div {
+            background-color: #111827 !important;
+            color: #f9fafb !important;
+            border: 1px solid #374151 !important;
+            border-radius: 8px !important;
+        }
+
+        div[data-baseweb="select"] * {
+            color: #f9fafb !important;
+        }
+
+        div[role="listbox"] {
+            background-color: #111827 !important;
+            color: #f9fafb !important;
+            border: 1px solid #374151 !important;
+        }
+
+        div[role="option"] {
+            background-color: #111827 !important;
+            color: #f9fafb !important;
+        }
+
+        div[role="option"]:hover {
+            background-color: #1f2937 !important;
+        }
+
+        /* General text */
+        .stMarkdown, .stText, .stSelectbox, .stMultiSelect, .stSlider, .stMetric,
+        div[data-testid="stMarkdownContainer"] p, label, small {
+            color: #f9fafb !important;
+        }
         </style>
     """, unsafe_allow_html=True)
+
 else:
     st.markdown("""
         <style>
-        .stApp { background-color: #f8f9fa; color: #1f2937; }
-        .css-1d391kg { background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 12px; }
+        .stApp {
+            background-color: #f4f4f5;
+            color: #1f2937;
+        }
+
+        .css-1d391kg {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.10);
+        }
+
+        /* Uploader label */
+        .stFileUploader label,
+        .stFileUploader [data-testid="stWidgetLabel"],
+        .stFileUploader [data-testid="stWidgetLabel"] p {
+            color: #334155 !important;
+            opacity: 1 !important;
+            font-weight: 500 !important;
+        }
+
+        /* Dropzone text */
+        .stFileUploader div[data-testid="stFileUploadDropzone"] p,
+        .stFileUploader div[data-testid="stFileUploadDropzone"] div {
+            color: #475569 !important;
+            font-weight: 500 !important;
+            font-size: 15px !important;
+            opacity: 1 !important;
+        }
+
+        /* Uploaded filenames */
+        .stFileUploader [data-testid="stFileUploaderFileName"] {
+            color: #475569 !important;
+            font-weight: 500 !important;
+            font-size: 15px !important;
+            opacity: 1 !important;
+        }
+
+        /* File size / secondary text */
+        .stFileUploader [data-testid="stFileUploaderFile"] small,
+        .stFileUploader [data-testid="stFileUploaderFile"] span {
+            color: #64748b !important;
+            font-weight: 400 !important;
+            opacity: 1 !important;
+        }
+
+        /* Data editor / dataframe */
+        .stDataFrame, .stTable, .stDataEditor {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+        }
+
+        .stDataFrame thead th, .stDataEditor thead th {
+            background-color: #f1f5f9 !important;
+            color: #1f2937 !important;
+        }
+
+        .stDataFrame td, .stDataEditor td {
+            color: #1f2937 !important;
+        }
+
+        /* Uploader container */
+        .stFileUploader {
+            background-color: #ffffff !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 12px;
+        }
+
+        /* Metrics */
+        div[data-testid="metric-container"] {
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            padding: 12px 16px !important;
+            color: #0f172a !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+        }
+
+        div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div,
+        div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div p {
+            color: #64748b !important;
+            font-weight: 600 !important;
+        }
+
+        div[data-testid="metric-container"] [data-testid="stMetricValue"] {
+            color: #0f172a !important;
+        }
+
+        div[data-testid="metric-container"] [data-testid="stMetricDelta"] {
+            color: #475569 !important;
+        }
+
+        /* Selectbox */
+        div[data-baseweb="select"] > div {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+        }
+
+        div[data-baseweb="select"] * {
+            color: #1f2937 !important;
+        }
+
+        div[role="listbox"] {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+            border: 1px solid #cbd5e1 !important;
+        }
+
+        div[role="option"] {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+        }
+
+        div[role="option"]:hover {
+            background-color: #f8fafc !important;
+        }
+
+        /* General text — SCOPED TO MAIN AREA ONLY (left column is completely untouched) */
+        section[data-testid="stMain"] .stMarkdown,
+        section[data-testid="stMain"] .stText,
+        section[data-testid="stMain"] .stSelectbox,
+        section[data-testid="stMain"] .stMultiSelect,
+        section[data-testid="stMain"] .stSlider,
+        section[data-testid="stMain"] .stMetric,
+        section[data-testid="stMain"] div[data-testid="stMarkdownContainer"] p,
+        section[data-testid="stMain"] label,
+        section[data-testid="stMain"] small {
+            color: #1f2937 !important;
+        }
         </style>
     """, unsafe_allow_html=True)
+
+# Shared button styling for Process / ZIP buttons
+st.markdown("""
+    <style>
+    /* === Process / ZIP buttons (unchanged) === */
+    div[class*="st-key-processbtn"] button,
+    div[class*="st-key-zipbtn"] button {
+        background-color: #ff5a5f !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        padding: 0.6rem 1rem !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
+    }
+
+    div[class*="st-key-processbtn"] button:hover,
+    div[class*="st-key-zipbtn"] button:hover {
+        background-color: #ff4a4f !important;
+        color: #ffffff !important;
+    }
+
+    div[class*="st-key-processbtn"] button:focus,
+    div[class*="st-key-processbtn"] button:active,
+    div[class*="st-key-zipbtn"] button:focus,
+    div[class*="st-key-zipbtn"] button:active {
+        background-color: #ff4a4f !important;
+        color: #ffffff !important;
+        outline: none !important;
+        border: none !important;
+        box-shadow: 0 0 0 0.2rem rgba(255,90,95,0.25) !important;
+    }
+
+    /* === BROWSE FILES BUTTON — SUPER AGGRESSIVE SELECTOR (works in BOTH themes) === */
+    /* This targets every possible way Streamlit renders the "Browse files" button */
+    div[data-testid="stFileUploader"] section[data-testid="stFileUploadDropzone"] button,
+    div[data-testid="stFileUploadDropzone"] button,
+    .stFileUploader button,
+    div[data-testid="stFileUploader"] button[data-testid="baseButton-secondary"] {
+        background-color: #111827 !important;
+        color: #f9fafb !important;
+        border: 1px solid #374151 !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        opacity: 1 !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+        min-height: 38px !important;   /* matches Streamlit default height */
+    }
+
+    /* Hover */
+    div[data-testid="stFileUploader"] section[data-testid="stFileUploadDropzone"] button:hover,
+    div[data-testid="stFileUploadDropzone"] button:hover,
+    .stFileUploader button:hover,
+    div[data-testid="stFileUploader"] button[data-testid="baseButton-secondary"]:hover {
+        background-color: #1f2937 !important;
+        color: #ffffff !important;
+        border: 1px solid #4b5563 !important;
+    }
+
+    /* Focus / Active */
+    div[data-testid="stFileUploader"] section[data-testid="stFileUploadDropzone"] button:focus,
+    div[data-testid="stFileUploader"] section[data-testid="stFileUploadDropzone"] button:active,
+    div[data-testid="stFileUploadDropzone"] button:focus,
+    div[data-testid="stFileUploadDropzone"] button:active,
+    .stFileUploader button:focus,
+    .stFileUploader button:active,
+    div[data-testid="stFileUploader"] button[data-testid="baseButton-secondary"]:focus,
+    div[data-testid="stFileUploader"] button[data-testid="baseButton-secondary"]:active {
+        background-color: #1f2937 !important;
+        color: #ffffff !important;
+        border: 1px solid #4b5563 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 0.2rem rgba(75,85,99,0.25) !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 st.set_page_config(page_title="Receipt Renamer", page_icon="🧾", layout="wide")
 
